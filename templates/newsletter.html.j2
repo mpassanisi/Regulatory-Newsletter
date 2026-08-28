@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veille levées de fonds — {{ date }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f4f2;font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;">
+  <div style="max-width:640px;margin:0 auto;padding:24px;">
+    <h1 style="font-size:22px;font-weight:600;margin:0 0 4px;">
+      Levées de fonds biotech &amp; pharma
+    </h1>
+    <p style="color:#6b6b6b;font-size:14px;margin:0 0 24px;">
+      Écosystème wallon &amp; belge — édition du {{ date }}
+    </p>
+
+    {% if deals %}
+      {% for d in deals %}
+      <div style="background:#ffffff;border-radius:12px;padding:18px;margin-bottom:14px;border:1px solid #e5e5e2;">
+        <h2 style="font-size:17px;font-weight:600;margin:0 0 6px;">
+          {{ d.societe or "Société non précisée" }}
+          {% if d.montant %}
+            <span style="color:#0f6e56;font-weight:600;">· {{ d.montant }}</span>
+          {% endif %}
+        </h2>
+        <p style="font-size:15px;line-height:1.5;margin:0 0 10px;">{{ d.resume }}</p>
+        <p style="font-size:13px;color:#6b6b6b;margin:0;">
+          {% if d.stade %}<strong>Stade :</strong> {{ d.stade }} · {% endif %}
+          {% if d.investisseurs %}<strong>Investisseurs :</strong> {{ d.investisseurs | join(", ") }} · {% endif %}
+          <a href="{{ d.url }}" style="color:#185fa5;">source ({{ d.source }})</a>
+        </p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p style="font-size:15px;color:#6b6b6b;">
+        Aucune levée de fonds détectée cette semaine dans l'écosystème suivi.
+      </p>
+    {% endif %}
+
+    <p style="font-size:12px;color:#9b9b9b;margin-top:24px;text-align:center;">
+      Veille automatisée · {{ deals | length }} deal(s) cette édition
+    </p>
+  </div>
+</body>
+</html>
