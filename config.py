@@ -29,7 +29,7 @@ SOURCES_PATH = ROOT / "sources.yaml"
 HTTP_TIMEOUT = 20
 USER_AGENT = (
     "Mozilla/5.0 (compatible; VeilleBiotechBot/1.0; "
-    "veille interne levées de fonds)"
+    "veille interne levees de fonds)"
 )
 REQUEST_DELAY = 1.0  # secondes entre deux requêtes de scraping (politesse)
 
