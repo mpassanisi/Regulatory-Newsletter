@@ -10,7 +10,7 @@ et le job planifié (écriture) et la page web (lecture) partagent ces données.
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import (
     Column, DateTime, Float, Integer, MetaData, String, Table, Text,
@@ -97,6 +97,16 @@ def _rows_to_deals(rows) -> list[Deal]:
         )
     return deals
 
+def recent_deals(engine: Engine, days: int = 7) -> list[Deal]:
+    """Deals collectés sur les N derniers jours — le contenu d'une édition."""
+    since = datetime.utcnow() - timedelta(days=days)
+    with engine.connect() as conn:
+        rows = conn.execute(
+            select(deals_table)
+            .where(deals_table.c.collected_at >= since)
+            .order_by(deals_table.c.collected_at.desc())
+        ).fetchall()
+    return _rows_to_deals(rows)
 
 def unsent_deals(engine: Engine) -> list[Deal]:
     """Deals pas encore diffusés — le contenu de la prochaine édition."""
