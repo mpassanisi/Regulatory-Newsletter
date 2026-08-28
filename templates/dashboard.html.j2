@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veille levées de fonds — biotech &amp; pharma wallonnes</title>
+  <style>
+    :root { --accent:#0f6e56; --link:#185fa5; --border:#e5e5e2; --muted:#6b6b6b; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f4f4f2; color:#1a1a1a;
+           font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+    .wrap { max-width:760px; margin:0 auto; padding:32px 20px 64px; }
+    header h1 { font-size:24px; font-weight:600; margin:0 0 4px; }
+    header p { color:var(--muted); font-size:14px; margin:0 0 8px; }
+    .links a { font-size:13px; color:var(--link); text-decoration:none; margin-right:14px; }
+    .links a:hover { text-decoration:underline; }
+    .card { background:#fff; border:1px solid var(--border); border-radius:12px;
+            padding:18px 20px; margin-top:14px; }
+    .card h2 { font-size:17px; font-weight:600; margin:0 0 6px; }
+    .amount { color:var(--accent); font-weight:600; }
+    .resume { font-size:15px; line-height:1.5; margin:0 0 10px; }
+    .meta { font-size:13px; color:var(--muted); margin:0; }
+    .meta a { color:var(--link); text-decoration:none; }
+    .empty { color:var(--muted); font-size:15px; margin-top:24px; }
+    .foot { color:#9b9b9b; font-size:12px; text-align:center; margin-top:32px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Levées de fonds — biotech &amp; pharma</h1>
+      <p>Écosystème wallon &amp; belge · mis à jour le {{ today }} · {{ total }} deal(s)</p>
+      <div class="links">
+        <a href="/newsletter">Voir la newsletter (édition en cours)</a>
+        <a href="/linkedin">Texte LinkedIn</a>
+      </div>
+    </header>
+
+    {% if deals %}
+      {% for d in deals %}
+      <div class="card">
+        <h2>
+          {{ d.societe or "Société non précisée" }}
+          {% if d.montant %}<span class="amount">· {{ d.montant }}</span>{% endif %}
+        </h2>
+        <p class="resume">{{ d.resume }}</p>
+        <p class="meta">
+          {% if d.stade %}<strong>Stade :</strong> {{ d.stade }} · {% endif %}
+          {% if d.investisseurs %}<strong>Investisseurs :</strong> {{ d.investisseurs | join(", ") }} · {% endif %}
+          <a href="{{ d.url }}" target="_blank" rel="noopener">source ({{ d.source }})</a>
+        </p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty">
+        Aucune levée enregistrée pour l'instant. Le job planifié alimentera cette
+        page dès son prochain passage.
+      </p>
+    {% endif %}
+
+    <p class="foot">Veille automatisée · biotech-veille</p>
+  </div>
+</body>
+</html>
