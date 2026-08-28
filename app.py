@@ -35,13 +35,13 @@ def dashboard():
 
 @app.route("/newsletter")
 def newsletter():
-    deals = storage.unsent_deals(engine)
+    deals = storage.recent_deals(engine, days=7)
     return render_html(deals)
 
 
 @app.route("/linkedin")
 def linkedin():
-    deals = storage.unsent_deals(engine)
+    deals = storage.recent_deals(engine, days=7)
     return Response(render_linkedin(deals), mimetype="text/plain; charset=utf-8")
 
 
