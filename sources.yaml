@@ -1,0 +1,74 @@
+# =====================================================================
+# Sources de veille "levées de fonds biotech / pharma".
+#
+#   - rss    : le plus fiable. Teste toujours /feed/ ou /rss avant de scraper.
+#   - scrape : plan B pour les sites sans flux. Les sélecteurs CSS ci-dessous
+#              sont des EXEMPLES à vérifier/ajuster (clic droit > Inspecter).
+# =====================================================================
+
+# --- Sources primaires wallonnes / belges ---
+- id: noshaq
+  type: scrape
+  url: https://noshaq.be/actualites/
+  item_selector: "article"
+  title_selector: "h2, h3"
+  link_selector: "a"
+
+- id: sambrinvest
+  type: scrape
+  url: https://www.sambrinvest.be/fr/actualites/biotechs/
+  item_selector: "article, .news-item"
+  title_selector: "h2, h3"
+  link_selector: "a"
+
+- id: biopark
+  type: scrape
+  url: https://www.biopark.be/news-7
+  item_selector: "article, .news-card"
+  title_selector: "h2, h3"
+  link_selector: "a"
+
+- id: orsafund
+  type: scrape
+  url: https://orsafund.be/ressources/
+  item_selector: "article, .resource"
+  title_selector: "h2, h3"
+  link_selector: "a"
+
+# --- Médias / trackers spécialisés ---
+- id: labiotech
+  type: rss
+  url: https://www.labiotech.eu/feed/
+
+- id: fiercebiotech
+  type: rss
+  url: https://www.fiercebiotech.com/rss/xml
+
+- id: biotech_finances
+  type: scrape
+  url: https://biotech-finances.com/fr
+  item_selector: "article"
+  title_selector: "h2, h3"
+  link_selector: "a"
+  note: "Largement payant — le scraping ne verra que les titres/extraits publics."
+
+- id: biotech_trade
+  type: scrape
+  url: https://biotech-trade.com/
+  item_selector: "article"
+  title_selector: "h2, h3"
+  link_selector: "a"
+
+- id: france_biotech
+  type: scrape
+  url: https://france-biotech.fr/newsletters/
+  item_selector: "article, .newsletter-item"
+  title_selector: "h2, h3"
+  link_selector: "a"
+
+- id: maddymoney
+  type: scrape
+  url: https://www.maddyness.com/newsletters/maddymoney/
+  item_selector: "article"
+  title_selector: "h2, h3"
+  link_selector: "a"

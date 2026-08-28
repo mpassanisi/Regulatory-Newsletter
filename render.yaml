@@ -1,0 +1,57 @@
+# =====================================================================
+# Blueprint Render — "clé sur porte".
+#
+# Dans Render : New > Blueprint > pointe sur ce repo GitHub. Render lit ce
+# fichier et crée les 3 ressources d'un coup, connectées entre elles :
+#   1. une base Postgres (partagée)
+#   2. un service web (la page qui affiche les résultats)
+#   3. un cron job (le pipeline, qui alimente la base chaque semaine)
+#
+# Seule action manuelle : renseigner les secrets marqués "sync: false"
+# (ta clé API Anthropic, et éventuellement Brevo) dans le dashboard Render.
+# =====================================================================
+
+databases:
+  - name: veille-db
+    plan: free              # 1 Go. NB : le Postgres gratuit Render expire —
+                            # voir README pour une base gratuite pérenne (Neon).
+    databaseName: veille
+    user: veille
+
+services:
+  # --- Page web : lit la base et affiche les levées détectées ---
+  - type: web
+    name: veille-web
+    runtime: python
+    plan: free              # gratuit, mais se met en veille après inactivité
+                            # (léger délai au premier chargement). $7/mo = always-on.
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: veille-db
+          property: connectionString
+
+  # --- Cron : lance le pipeline (collecte + tri + stockage) ---
+  - type: cron
+    name: veille-cron
+    runtime: python
+    schedule: "0 6 * * 1"   # tous les lundis à 6h UTC
+    plan: starter           # les cron jobs ne sont pas gratuits (~1 $/mois mini)
+    buildCommand: pip install -r requirements.txt
+    startCommand: python pipeline.py
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: veille-db
+          property: connectionString
+      - key: ANTHROPIC_API_KEY
+        sync: false         # à renseigner dans le dashboard Render
+      - key: CLASSIFY_MODEL
+        value: claude-haiku-4-5-20251001
+      - key: BREVO_API_KEY
+        sync: false         # optionnel (envoi email)
+      - key: SENDER_EMAIL
+        sync: false         # optionnel
