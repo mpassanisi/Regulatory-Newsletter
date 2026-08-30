@@ -79,9 +79,10 @@ def classify(item: RawItem) -> dict | None:
 
 
 def keep(analysis: dict) -> bool:
-    """Filtre final : vraie levée + acteur belge/wallon + confiance suffisante."""
+    """Filtre final : vraie levée + biotech/pharma + acteur belge/wallon + confiance."""
     return (
         bool(analysis.get("est_levee_de_fonds"))
         and bool(analysis.get("est_wallon_ou_belge"))
+        and bool(analysis.get("est_biotech_ou_pharma"))
         and float(analysis.get("confiance", 0)) >= config.MIN_CONFIANCE
     )
