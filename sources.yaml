@@ -13,7 +13,7 @@
   url: https://aktus-cci.be/feed/          # (?) éco wallonne, couvre WE/invests/biotech
 - id: biowin
   type: rss
-  url: https://biowin.org/feed/            # (?) pôle santé wallon
+  url: https://www.biowin.org/feed/            # (?) pôle santé wallon
 - id: ccimag
   type: rss
   url: https://www.ccimag.be/feed/         # (?) magazine des entreprises (CCI)
