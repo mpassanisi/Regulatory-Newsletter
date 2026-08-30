@@ -32,6 +32,7 @@ TOOL = {
         "type": "object",
         "properties": {
             "est_levee_de_fonds": {"type": "boolean"},
+            "est_biotech_ou_pharma": {"type": "boolean"},
             "societe": {"type": ["string", "null"]},
             "est_wallon_ou_belge": {"type": "boolean"},
             "montant": {"type": ["string", "null"],
@@ -44,9 +45,8 @@ TOOL = {
             "confiance": {"type": "number", "description": "Entre 0 et 1."},
         },
         "required": [
-            "est_levee_de_fonds", "est_wallon_ou_belge",
+            "est_levee_de_fonds", "est_wallon_ou_belge", "est_biotech_ou_pharma",
             "investisseurs", "resume", "confiance",
-            "est_biotech_ou_pharma": {"type": "boolean"},
         ],
     },
 }
