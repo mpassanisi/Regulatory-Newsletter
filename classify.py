@@ -14,11 +14,15 @@ client = anthropic.Anthropic()  # lit ANTHROPIC_API_KEY dans l'environnement
 
 SYSTEM = (
     "Tu es un analyste de veille spécialisé en biotech et pharma. "
-    "Pour chaque article, détermine s'il s'agit d'une véritable levée de fonds "
-    "(tour de financement : seed, série A/B/C, IPO, dette, etc.), et non d'une "
-    "acquisition, d'une subvention générique ou d'un simple partenariat. "
-    "Un acteur est 'wallon ou belge' si la société financée est basée en "
-    "Wallonie ou en Belgique. Appelle toujours l'outil enregistrer_analyse."
+    "Pour chaque article, détermine trois choses : "
+    "(1) s'il s'agit d'une véritable levée de fonds (tour de financement : "
+    "seed, série A/B/C, IPO, dette, etc.), et non d'une acquisition, d'une "
+    "subvention générique ou d'un simple partenariat ; "
+    "(2) si la société financée est basée en Wallonie ou en Belgique ; "
+    "(3) si la société relève bien du secteur biotech, pharma, ou des "
+    "sciences du vivant (thérapeutique, medtech, diagnostic, santé) — et "
+    "NON d'un autre secteur (logiciel généraliste, industrie, immobilier, "
+    "commerce, etc.). Appelle toujours l'outil enregistrer_analyse."
 )
 
 TOOL = {
