@@ -46,6 +46,7 @@ TOOL = {
         "required": [
             "est_levee_de_fonds", "est_wallon_ou_belge",
             "investisseurs", "resume", "confiance",
+            "est_biotech_ou_pharma": {"type": "boolean"},
         ],
     },
 }
