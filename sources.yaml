@@ -1,175 +1,52 @@
 # =====================================================================
-# Sources de veille — LEVÉES DE FONDS BIOTECH / PHARMA (focus Belgique)
+# Sources — LEVÉES BIOTECH/PHARMA BELGES · version RSS-first (robuste)
 #
-#   - rss    : fiable, sans entretien. Toujours à privilégier.
-#   - scrape : sélecteurs CSS à vérifier site par site (clic droit > Inspecter).
-#
-# MÉTHODE : après ce changement, laisse tourner le cron et lis les logs.
-#   · une source à "0 items" AVEC erreur      -> URL/flux à corriger
-#   · une source à "0 items" SANS erreur       -> sélecteurs à ajuster
-#   · pour toute source en scrape, teste <url>/feed/ : si ça répond du XML,
-#     bascule-la en rss (plus robuste).
+# Leçon apprise : les sites des invests (Noshaq, PMV...) sont rendus en
+# JavaScript -> illisibles par le scraper simple. On mise donc sur des
+# FLUX RSS d'agrégateurs qui couvrent leurs deals. Confirme les feeds
+# marqués (?) au 1er run ; s'ils renvoient 0, voir la note en bas.
 # =====================================================================
 
-# ============ CLUSTERS & AGRÉGATEURS D'ÉCOSYSTÈME (haut rendement) ====
-# Relaient d'un coup les deals de toute la région : tes sources reines.
-
+# ---- AGRÉGATEURS RSS (le cœur, haute valeur) ----
+- id: aktus_cci
+  type: rss
+  url: https://aktus-cci.be/feed/          # (?) éco wallonne, couvre WE/invests/biotech
 - id: biowin
   type: rss
-  url: https://biowin.org/feed/          # WordPress — à confirmer au 1er run
-  note: "Pôle santé wallon. Si 0 item, essayer https://biowin.org/fr/category/toute-lactualite/ en scrape."
+  url: https://biowin.org/feed/            # (?) pôle santé wallon
+- id: ccimag
+  type: rss
+  url: https://www.ccimag.be/feed/         # (?) magazine des entreprises (CCI)
+- id: labiotech
+  type: rss
+  url: https://www.labiotech.eu/feed/      # confirmé OK
+- id: sifted
+  type: rss
+  url: https://sifted.eu/feed              # confirmé OK (24 items)
 
-- id: flandersbio
-  type: scrape
-  url: https://flanders.bio/en/news/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-# ============ INVESTS PUBLICS BELGES (primaires, réguliers) ==========
-
-- id: noshaq
-  type: scrape
-  url: https://noshaq.be/actualites/
-  item_selector: "article"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
+# ---- INVESTS : best-effort scrape (peuvent rester à 0 si JS) ----
+# Gardés au cas où une partie du contenu serait statique. Sans garantie.
 - id: sambrinvest
   type: scrape
   url: https://www.sambrinvest.be/fr/actualites/biotechs/
   item_selector: "article, .news-item"
   title_selector: "h2, h3"
   link_selector: "a"
-
-- id: wallonie_entreprendre
-  type: scrape
-  url: https://www.wallonie-entreprendre.be/actualites/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: pmv
-  type: scrape
-  url: https://www.pmv.eu/en/news
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: finance_brussels
-  type: scrape
-  url: https://finance.brussels/fr/actualites/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-# ============ VC BIOTECH BELGES (issus de ta base Eklo) ==============
-
-- id: fundplus
-  type: scrape
-  url: https://www.fundplus.be/news
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: epimede
-  type: scrape
-  url: https://epimede.com/actualites/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: theodorus
-  type: scrape
-  url: https://www.theodorus.be/news/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: newton_biocapital
-  type: scrape
-  url: https://newtonbiocapital.com/news/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: gimv
-  type: rss
-  url: https://www.gimv.com/en/rss.xml    # à confirmer ; sinon /en/news en scrape
-  note: "Plateforme Life Sciences. Filtrer sur le secteur au niveau LLM."
-
-- id: capricorn
-  type: scrape
-  url: https://www.capricorn.be/news/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: imecxpand
-  type: scrape
-  url: https://imecxpand.com/news/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: qbic
-  type: scrape
-  url: https://qbic.be/news/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: bioqube
-  type: scrape
-  url: https://bioqubeventures.com/news/
-  item_selector: "article, .news-item"
-  title_selector: "h2, h3"
-  link_selector: "a"
-
-- id: orsafund
-  type: scrape
-  url: https://orsafund.be/actualites/
-  item_selector: "article"
-  title_selector: "h2, h3"
-  link_selector: "a"
-  note: "Généraliste : peu de biotech. Le filtre secteur LLM écartera le reste."
-
-# ============ BIOPARCS & CAMPUS ======================================
-
 - id: biopark
   type: scrape
   url: https://www.biopark.be/news-7
   item_selector: "article, .news-card"
   title_selector: "h2, h3"
   link_selector: "a"
-
-# ============ MÉDIAS SPÉCIALISÉS =====================================
-
-- id: labiotech
-  type: rss
-  url: https://www.labiotech.eu/feed/
-
-- id: sifted
-  type: rss
-  url: https://sifted.eu/feed
-  note: "Couvre les levées européennes ; tag Belgique utile."
-
-- id: fiercebiotech
-  type: rss
-  url: https://www.fiercebiotech.com/rss.xml
-  note: "L'ancienne URL /rss/xml renvoyait 0. Si toujours 0, chercher le bon flux sur le site."
-
-# ============ PRESSE ÉCO BELGE (souvent payante) =====================
-# Le scraping ne verra que titres/extraits publics — utile quand même
-# comme signal ; le lien renverra vers l'article complet (payant).
-
-- id: lecho
+- id: orsafund
   type: scrape
-  url: https://www.lecho.be/entreprises/pharma-biotech.html
-  item_selector: "article, .article-teaser"
+  url: https://orsafund.be/actualites/
+  item_selector: "article"
   title_selector: "h2, h3"
   link_selector: "a"
 
-# --- Désactivées (franco-françaises, peu de signal Belgique) ---------
-# - id: maddymoney   (https://www.maddyness.com/newsletters/maddymoney/)
-# - id: france_biotech (https://france-biotech.fr/newsletters/)
+# ---- DÉSACTIVÉES (URL 404, ou bloquées 403, ou JS pur) --------------
+# noshaq (JS) · wallonie_entreprendre (JS) · pmv (403) · lecho (403/payant)
+# epimede/theodorus/newton/imecxpand/finance_brussels (404 : pas de page
+#   news standard). Leurs deals notables passent via les agrégateurs RSS.
+# fiercebiotech (flux introuvable) · maddymoney/france_biotech (non-belges)
