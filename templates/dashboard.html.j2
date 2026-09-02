@@ -14,13 +14,19 @@
     header p { color:var(--muted); font-size:14px; margin:0 0 8px; }
     .links a { font-size:13px; color:var(--link); text-decoration:none; margin-right:14px; }
     .links a:hover { text-decoration:underline; }
-    .card { background:#fff; border:1px solid var(--border); border-radius:12px;
-            padding:18px 20px; margin-top:14px; }
+    .copybtn { font-size:13px; color:#fff; background:var(--accent); border:none;
+               border-radius:6px; padding:7px 12px; cursor:pointer; margin-top:10px; }
+    .card { position:relative; background:#fff; border:1px solid var(--border);
+            border-radius:12px; padding:18px 44px 18px 20px; margin-top:14px; }
     .card h2 { font-size:17px; font-weight:600; margin:0 0 6px; }
     .amount { color:var(--accent); font-weight:600; }
     .resume { font-size:15px; line-height:1.5; margin:0 0 10px; }
     .meta { font-size:13px; color:var(--muted); margin:0; }
     .meta a { color:var(--link); text-decoration:none; }
+    .hidebtn { position:absolute; top:10px; right:12px; margin:0; }
+    .hidebtn button { border:none; background:none; font-size:20px; color:#c4c4c4;
+                      cursor:pointer; line-height:1; padding:0; }
+    .hidebtn button:hover { color:#b00; }
     .empty { color:var(--muted); font-size:15px; margin-top:24px; }
     .foot { color:#9b9b9b; font-size:12px; text-align:center; margin-top:32px; }
   </style>
@@ -33,12 +39,19 @@
       <div class="links">
         <a href="/newsletter">Voir la newsletter (édition en cours)</a>
         <a href="/linkedin">Texte LinkedIn</a>
+        <a href="/upload">Déposer une revue de presse</a>
       </div>
+      <div><button class="copybtn" onclick="copyNewsletter()">Copier la newsletter pour l'email</button></div>
     </header>
 
     {% if deals %}
       {% for d in deals %}
       <div class="card">
+        <form class="hidebtn" method="post" action="/hide"
+              onsubmit="return confirm('Retirer définitivement ce sujet de la veille ?');">
+          <input type="hidden" name="url" value="{{ d.url }}">
+          <button type="submit" title="Retirer ce sujet">&times;</button>
+        </form>
         <h2>
           {{ d.societe or "Société non précisée" }}
           {% if d.montant %}<span class="amount">· {{ d.montant }}</span>{% endif %}
@@ -52,13 +65,27 @@
       </div>
       {% endfor %}
     {% else %}
-      <p class="empty">
-        Aucune levée enregistrée pour l'instant. Le job planifié alimentera cette
-        page dès son prochain passage.
-      </p>
+      <p class="empty">Aucune levée enregistrée pour l'instant.</p>
     {% endif %}
 
     <p class="foot">Veille automatisée · biotech-veille</p>
   </div>
+
+  <script>
+    async function copyNewsletter() {
+      try {
+        const res = await fetch('/newsletter');
+        const html = await res.text();
+        const plain = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+        await navigator.clipboard.write([new ClipboardItem({
+          'text/html': new Blob([html], {type: 'text/html'}),
+          'text/plain': new Blob([plain], {type: 'text/plain'})
+        })]);
+        alert('Newsletter copiée ! Colle-la (Ctrl+V) dans ton email.');
+      } catch (e) {
+        alert('Copie impossible sur ce navigateur. Utilise plutôt la page /newsletter.');
+      }
+    }
+  </script>
 </body>
 </html>
