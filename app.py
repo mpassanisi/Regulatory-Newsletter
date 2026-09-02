@@ -79,19 +79,23 @@ def _upload_result(error, found, saved):
 def upload():
     if request.method == "GET":
         return UPLOAD_PAGE
-    file = request.files.get("file")
-    if not file or not file.filename.lower().endswith(".pdf"):
-        return _upload_result("Merci de déposer un fichier PDF.", 0, 0)
-    try:
-        deals = pressreview.deals_from_pdf(file.read())
-    except Exception as exc:
-        return _upload_result(f"Erreur de traitement : {exc}", 0, 0)
-    saved = 0
-    for d in deals:
-        if not storage.already_known(engine, d.url):
-            storage.save_deal(engine, d)
-            saved += 1
-    return _upload_result(None, len(deals), saved)
+    files = [f for f in request.files.getlist("file")
+             if f and f.filename.lower().endswith(".pdf")]
+    if not files:
+        return _upload_result("Merci de déposer au moins un fichier PDF.", 0, 0)
+    total_found, total_saved = 0, 0
+    for file in files:
+        try:
+            deals = pressreview.deals_from_pdf(file.read())
+        except Exception as exc:
+            print(f"  [!] {file.filename} : {exc}")
+            continue
+        total_found += len(deals)
+        for d in deals:
+            if not storage.already_known(engine, d.url):
+                storage.save_deal(engine, d)
+                total_saved += 1
+    return _upload_result(None, total_found, total_saved)
 
 if __name__ == "__main__":
     # Développement local uniquement. En prod, Render lance gunicorn.
