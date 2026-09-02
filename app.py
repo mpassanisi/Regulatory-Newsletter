@@ -11,7 +11,7 @@ Démarrage en production : gunicorn app:app
 """
 from datetime import date
 
-from flask import Flask, Response, render_template, request
+from flask import Flask, Response, render_template, request, redirect
 
 import pressreview
 import storage
