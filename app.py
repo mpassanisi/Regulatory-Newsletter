@@ -96,7 +96,12 @@ def upload():
                 storage.save_deal(engine, d)
                 total_saved += 1
     return _upload_result(None, total_found, total_saved)
-
+@app.route("/hide", methods=["POST"])
+def hide():
+    url = request.form.get("url")
+    if url:
+        storage.hide_deal(engine, url)
+    return redirect(request.referrer or "/")
 if __name__ == "__main__":
     # Développement local uniquement. En prod, Render lance gunicorn.
     app.run(host="0.0.0.0", port=5000, debug=True)
