@@ -52,10 +52,10 @@ def health():
 UPLOAD_PAGE = """<!DOCTYPE html><html lang="fr"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <body style="font-family:Arial;max-width:640px;margin:40px auto;padding:0 20px;color:#1a1a1a;">
-<h1 style="font-size:20px;">Déposer la revue de presse (PDF)</h1>
+<h1 style="font-size:20px;">Déposer une ou plusieurs revues de presse (PDF)</h1>
 <p style="color:#6b6b6b;font-size:14px;">Le système en extrait les levées biotech/pharma belges et les ajoute à la veille. Optionnel : le reste tourne sans ça.</p>
 <form method="post" enctype="multipart/form-data">
-  <input type="file" name="file" accept="application/pdf" required>
+  <input type="file" name="file" accept="application/pdf" multiple required>
   <button type="submit" style="margin-left:8px;">Analyser</button>
 </form>
 <p style="font-size:12px;color:#9b9b9b;margin-top:16px;">Le traitement peut prendre 10 à 30 secondes.</p>
