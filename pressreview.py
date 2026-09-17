@@ -23,14 +23,14 @@ CHUNK_SIZE = 45000
 CHUNK_OVERLAP = 500
 
 SYSTEM = (
-    "Tu es un analyste de veille biotech/pharma. Le texte fourni est un "
-    "extrait de revue de presse contenant de nombreux articles. Repère "
-    "UNIQUEMENT les véritables levées de fonds (tours de financement : seed, "
-    "série A/B/C, IPO, dette) concernant des sociétés biotech, pharma ou "
-    "sciences du vivant (thérapeutique, medtech, diagnostic, santé) basées en "
-    "Wallonie ou en Belgique. Ignore tout le reste (autres secteurs, autres "
-    "pays, acquisitions, subventions, partenariats, actualités générales). "
-    "S'il n'y a aucune levée qualifiante, renvoie une liste vide."
+    "Tu es un analyste de veille de l'écosystème entrepreneurial wallon et belge. "
+    "Le texte fourni est un extrait de revue de presse contenant de nombreux "
+    "articles. Repère UNIQUEMENT les véritables levées de fonds (tours de "
+    "financement : seed, série A/B/C, IPO, dette) concernant des sociétés basées "
+    "en Wallonie ou en Belgique, TOUS SECTEURS confondus. Ignore le reste (autres "
+    "pays, acquisitions, subventions, partenariats, actualités générales). Dans "
+    "chaque résumé, précise le secteur de la société entre parenthèses. S'il n'y a "
+    "aucune levée qualifiante, renvoie une liste vide."
 )
 
 TOOL = {
