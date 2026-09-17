@@ -1,42 +1,44 @@
-"""Étage 5 : rendu de l'édition en HTML (email) et texte (LinkedIn)."""
 from __future__ import annotations
-
 from datetime import date
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-
 import config
 from models import Deal
 
-_env = Environment(
-    loader=FileSystemLoader(config.ROOT / "templates"),
-    autoescape=select_autoescape(["html", "j2"]),
-)
+_env = Environment(loader=FileSystemLoader(config.ROOT / "templates"),
+                   autoescape=select_autoescape(["html", "j2"]))
 
+def render_html(deals):
+    return _env.get_template("newsletter.html.j2").render(
+        deals=deals, date=date.today().strftime("%d/%m/%Y"))
 
-def render_html(deals: list[Deal]) -> str:
-    template = _env.get_template("newsletter.html.j2")
-    return template.render(deals=deals, date=date.today().strftime("%d/%m/%Y"))
-
-
-def render_linkedin(deals: list[Deal]) -> str:
-    """Texte prêt à copier-coller dans l'éditeur LinkedIn."""
+def render_linkedin(deals) -> str:
     today = date.today().strftime("%d/%m/%Y")
-    lines = [
-        f"📊 Levées de fonds biotech & pharma — écosystème wallon & belge ({today})",
-        "",
-    ]
+    n = len(deals)
+    lines = [f"🚀 What's up in Wallonia? — Les levées de fonds ({today})", ""]
     if not deals:
-        lines.append("Semaine calme : aucune levée détectée dans l'écosystème suivi.")
-    else:
-        for d in deals:
-            montant = f" — {d.montant}" if d.montant else ""
-            lines.append(f"🔹 {d.societe or 'Société'}{montant}")
-            lines.append(f"   {d.resume}")
-            if d.stade:
-                lines.append(f"   Stade : {d.stade}")
-            if d.investisseurs:
-                lines.append(f"   Investisseurs : {', '.join(d.investisseurs)}")
-            lines.append("")
-    lines.append("#biotech #pharma #Wallonie #venturecapital #lifesciences")
+        lines.append("Semaine calme du côté des levées de fonds wallonnes. "
+                     "On revient dès qu'un nouveau tour est bouclé 👀")
+        lines += ["", "#Wallonia #startup #venturecapital #Belgium"]
+        return "\n".join(lines)
+    intro = ("Cette semaine, une société wallonne/belge a bouclé un tour de financement 👇"
+             if n == 1 else
+             f"Cette semaine, {n} sociétés wallonnes/belges ont bouclé un tour de financement 👇")
+    lines += [intro, ""]
+    for d in deals:
+        montant = f" — {d.montant}" if d.montant else ""
+        lines.append(f"💰 {d.societe or 'Société'}{montant}")
+        if d.resume:
+            lines.append(d.resume)
+        details = []
+        if d.stade:
+            details.append(f"Tour : {d.stade}")
+        if d.investisseurs:
+            details.append(f"Investisseurs : {', '.join(d.investisseurs)}")
+        if details:
+            lines.append("↳ " + " · ".join(details))
+        lines.append("")
+    lines.append("📊 Une veille automatisée de l'écosystème entrepreneurial wallon.")
+    lines.append("Un deal manque ? Signalez-le en commentaire.")
+    lines.append("")
+    lines.append("#Wallonia #startup #venturecapital #Belgium #fundraising #scaleup")
     return "\n".join(lines)
