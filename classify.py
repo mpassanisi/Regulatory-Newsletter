@@ -13,16 +13,16 @@ from models import RawItem
 client = anthropic.Anthropic()  # lit ANTHROPIC_API_KEY dans l'environnement
 
 SYSTEM = (
-    "Tu es un analyste de veille spécialisé en biotech et pharma. "
-    "Pour chaque article, détermine trois choses : "
+    "Tu es un analyste de veille de l'écosystème entrepreneurial wallon et belge. "
+    "Pour chaque article, détermine deux choses : "
     "(1) s'il s'agit d'une véritable levée de fonds (tour de financement : "
     "seed, série A/B/C, IPO, dette, etc.), et non d'une acquisition, d'une "
     "subvention générique ou d'un simple partenariat ; "
-    "(2) si la société financée est basée en Wallonie ou en Belgique ; "
-    "(3) si la société relève bien du secteur biotech, pharma, ou des "
-    "sciences du vivant (thérapeutique, medtech, diagnostic, santé) — et "
-    "NON d'un autre secteur (logiciel généraliste, industrie, immobilier, "
-    "commerce, etc.). Appelle toujours l'outil enregistrer_analyse."
+    "(2) si la société financée est basée en Wallonie ou en Belgique. "
+    "Tous les secteurs d'activité sont concernés. Dans le résumé, précise "
+    "systématiquement le secteur ou l'activité de la société entre parenthèses "
+    "(ex : « (biotech) », « (logiciel SaaS) », « (spatial) »). "
+    "Appelle toujours l'outil enregistrer_analyse."
 )
 
 TOOL = {
@@ -32,7 +32,6 @@ TOOL = {
         "type": "object",
         "properties": {
             "est_levee_de_fonds": {"type": "boolean"},
-            "est_biotech_ou_pharma": {"type": "boolean"},
             "societe": {"type": ["string", "null"]},
             "est_wallon_ou_belge": {"type": "boolean"},
             "montant": {"type": ["string", "null"],
@@ -45,7 +44,7 @@ TOOL = {
             "confiance": {"type": "number", "description": "Entre 0 et 1."},
         },
         "required": [
-            "est_levee_de_fonds", "est_wallon_ou_belge", "est_biotech_ou_pharma",
+           "est_levee_de_fonds", "est_wallon_ou_belge",
             "investisseurs", "resume", "confiance",
         ],
     },
@@ -79,10 +78,9 @@ def classify(item: RawItem) -> dict | None:
 
 
 def keep(analysis: dict) -> bool:
-    """Filtre final : vraie levée + biotech/pharma + acteur belge/wallon + confiance."""
+    """Filtre final : vraie levée + acteur belge/wallon + confiance suffisante."""
     return (
         bool(analysis.get("est_levee_de_fonds"))
         and bool(analysis.get("est_wallon_ou_belge"))
-        and bool(analysis.get("est_biotech_ou_pharma"))
         and float(analysis.get("confiance", 0)) >= config.MIN_CONFIANCE
     )
